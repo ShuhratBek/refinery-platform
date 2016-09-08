@@ -83,6 +83,11 @@ def main():
     config_uri = save_s3_config(config, unique_suffix)
     sys.stderr.write("Configuration saved to {}\n".format(config_uri))
 
+    runtime_context = {}
+    runtime_context['region'] = functions.ref("AWS::Region")
+    runtime_context['data_volume_id'] = functions.ref('RefineryData')
+    runtime_context['git_commit'] = commit
+
     # The userdata script is executed via CloudInit.
     # It's made by concatenating a block of parameter variables,
     # with the bootstrap.sh script,
@@ -92,6 +97,8 @@ def main():
         "#!/bin/sh\n",
         "CONFIG_YAML=", base64.b64encode(config_yaml), "\n",
         "CONFIG_JSON=", base64.b64encode(json.dumps(config)), "\n",
+        "RUNTIME_CONTEXT_JSON=", base64.b64encode(json.dumps(
+                                                  runtime_context)), "\n",
         "AWS_DEFAULT_REGION=", functions.ref("AWS::Region"), "\n",
         "RDS_ID=", functions.ref('RDSInstance'), "\n",
         "RDS_ENDPOINT_ADDRESS=",

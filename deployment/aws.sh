@@ -18,6 +18,8 @@ GIT_BRANCH=${GIT_BRANCH:-develop}
 
 printf '%s' "${CONFIG_YAML}" | base64 -d > /home/ubuntu/config.yaml
 printf '%s' "${CONFIG_JSON}" | base64 -d > /home/ubuntu/config.json
+printf '%s' "$RUNTIME_CONTEXT_JSON}" |
+  base64 -d > /home/ubuntu/runtime_context.json
 
 # Fetch the source code repo (from github),
 # and switch to the desired commit/branch.
